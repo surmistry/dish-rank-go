@@ -1,1 +1,0 @@
-func (h handler) DeleteArticle(w http.ResponseWriter, r *http.Request) {...}
