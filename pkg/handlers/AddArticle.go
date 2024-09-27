@@ -1,0 +1,1 @@
+func (h handler) AddArticle(w http.ResponseWriter, r *http.Request) { ...}

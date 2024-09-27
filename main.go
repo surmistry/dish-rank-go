@@ -9,6 +9,29 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type Restaurant struct {
+	Name    string
+	Cuisine string
+	// Address	Address
+}
+
+type Dish struct {
+	Name        string
+	Description string
+	Restaurant  Restaurant
+}
+
+type Review struct {
+	Comment string
+	Dish    Dish
+}
+
+type Ranking struct {
+	Previous Review
+	Next     Review
+	Review   Review
+}
+
 var rankings []Ranking
 var restaurants []Restaurant
 var dishes []Dish
