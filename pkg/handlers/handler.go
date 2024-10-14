@@ -2,13 +2,14 @@ package handlers
 
 import (
 	"database/sql"
+	"dish-rank-go/dish-rank-go/pkg/models"
 	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/janirefdez/ArticleRestApi/pkg/models"
+	// "github.com/janirefdez/ArticleRestApi/pkg/models"
 )
 
 type handler struct {
@@ -29,12 +30,12 @@ func (h handler) AddRestaurant(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-	var restaurant models.Restaurants
+	var restaurant models.Restaurant
 	json.Unmarshal(body, &restaurant)
 
 	restaurant.Id = (uuid.New()).String()
 	queryStmt := `INSERT INTO restaurants (id,title,description,content) VALUES ($1, $2, $3, $4) RETURNING id;`
-	err = h.DB.QueryRow(queryStmt, &restaurant.Id, &restaurant.Title, &restaurant.Desc, &restaurant.Content).Scan(&restaurant.Id)
+	err = h.DB.QueryRow(queryStmt, &restaurant.Id, &restaurant.Name, &restaurant.Cuisine, &restaurant.Address).Scan(&restaurant.Id)
 	if err != nil {
 		log.Println("failed to execute query", err)
 		w.WriteHeader(500)

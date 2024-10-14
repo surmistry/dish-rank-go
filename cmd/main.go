@@ -26,6 +26,7 @@ func handleRequests(DB *sql.DB) {
 
 func main() {
 	DB := db.Connect()
+	db.DropTable(DB)
 	db.CreateTable(DB)
 	handleRequests(DB)
 	db.CloseConnection(DB)

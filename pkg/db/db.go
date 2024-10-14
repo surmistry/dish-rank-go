@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/janirefdez/ArticleRestApi/pkg/mocks"
+	"dish-rank-go/dish-rank-go/pkg/mocks"
 	_ "github.com/lib/pq"
 )
 
@@ -53,9 +53,9 @@ func CreateTable(db *sql.DB) {
 		fmt.Println("Table created successfully", results)
 
 		for _, restaurant := range mocks.Restaurants {
-			queryStmt := `INSERT INTO restaurants (id,title,cuisine,address) VALUES ($1, $2, $3, $4) RETURNING id;`
+			queryStmt := `INSERT INTO restaurants (id,name,cuisine,address) VALUES ($1, $2, $3, $4) RETURNING id;`
 
-			err := db.QueryRow(queryStmt, &restaurant.Id, &restaurant.Title, &restaurant.Cuisine, &restaurant.Address).Scan(&restaurant.Id)
+			err := db.QueryRow(queryStmt, &restaurant.Id, &restaurant.Name, &restaurant.Cuisine, &restaurant.Address).Scan(&restaurant.Id)
 			if err != nil {
 				log.Println("failed to execute query", err)
 				return
@@ -65,5 +65,21 @@ func CreateTable(db *sql.DB) {
 	} else {
 		fmt.Println("Table 'articles' already exists ")
 	}
+
+}
+
+func DeleteTable(db *sql.DB){
+	var exists bool
+	if err := db.QueryRow("SELECT EXISTS (SELECT FROM pg_tables WHERE  schemaname = 'public' AND tablename = 'restaurants' );").Scan(&exists); err != nil {
+		fmt.Println("failed to execute query", err)
+		return
+	}
+	if exists {
+		results, err := db.Query("DROP TABLE restaurants;")
+		if err != nil {
+			fmt.Println("failed to execute query", err)
+			return
+		}
+		fmt.Println("Table dropped successfully", results)
 
 }
