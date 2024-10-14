@@ -16,8 +16,8 @@ func handleRequests(DB *sql.DB) {
 	myRouter := mux.NewRouter().StrictSlash(true)
 	// 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/restaurants", h.AddRestaurant).Methods(http.MethodPost)
-	// myRouter.HandleFunc("/articles", h.GetAllArticles).Methods(http.MethodGet)
-	// myRouter.HandleFunc("/articles/{id}", h.GetArticle).Methods(http.MethodGet)
+	myRouter.HandleFunc("/restaurants", h.GetAllRestaurants).Methods(http.MethodGet)
+	myRouter.HandleFunc("/restaurants/{id}", h.GetRestaurant).Methods(http.MethodGet)
 	// myRouter.HandleFunc("/articles", h.AddArticle).Methods(http.MethodPost)
 	// myRouter.HandleFunc("/articles/{id}", h.UpdateArticle).Methods(http.MethodPut)
 	// myRouter.HandleFunc("/articles/{id}", h.DeleteArticle).Methods(http.MethodDelete)
@@ -26,7 +26,7 @@ func handleRequests(DB *sql.DB) {
 
 func main() {
 	DB := db.Connect()
-	db.DropTable(DB)
+	db.DeleteTable(DB)
 	db.CreateTable(DB)
 	handleRequests(DB)
 	db.CloseConnection(DB)

@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/google/uuid"
+	"github.com/gorilla/mux"
 	// "github.com/janirefdez/ArticleRestApi/pkg/models"
 )
 
@@ -34,7 +35,7 @@ func (h handler) AddRestaurant(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(body, &restaurant)
 
 	restaurant.Id = (uuid.New()).String()
-	queryStmt := `INSERT INTO restaurants (id,title,description,content) VALUES ($1, $2, $3, $4) RETURNING id;`
+	queryStmt := `INSERT INTO restaurants (id,name,cuisine,address) VALUES ($1, $2, $3, $4) RETURNING id;`
 	err = h.DB.QueryRow(queryStmt, &restaurant.Id, &restaurant.Name, &restaurant.Cuisine, &restaurant.Address).Scan(&restaurant.Id)
 	if err != nil {
 		log.Println("failed to execute query", err)
@@ -48,59 +49,59 @@ func (h handler) AddRestaurant(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// func (h handler) GetAllArticles(w http.ResponseWriter, r *http.Request) {
+func (h handler) GetAllRestaurants(w http.ResponseWriter, r *http.Request) {
 
-// 	results, err := h.DB.Query("SELECT * FROM articles;")
-// 	if err != nil {
-// 		log.Println("failed to execute query", err)
-// 		w.WriteHeader(500)
-// 		return
-// 	}
+	results, err := h.DB.Query("SELECT * FROM restaurants;")
+	if err != nil {
+		log.Println("failed to execute query", err)
+		w.WriteHeader(500)
+		return
+	}
 
-// 	var articles = make([]models.Article, 0)
-// 	for results.Next() {
-// 		var article models.Article
-// 		err = results.Scan(&article.Id, &article.Title, &article.Desc, &article.Content)
-// 		if err != nil {
-// 			log.Println("failed to scan", err)
-// 			w.WriteHeader(500)
-// 			return
-// 		}
+	var restaurants = make([]models.Restaurant, 0)
+	for results.Next() {
+		var restaurant models.Restaurant
+		err = results.Scan(&restaurant.Id, &restaurant.Name, &restaurant.Cuisine, &restaurant.Address)
+		if err != nil {
+			log.Println("failed to scan", err)
+			w.WriteHeader(500)
+			return
+		}
 
-// 		articles = append(articles, article)
-// 	}
+		restaurants = append(restaurants, restaurant)
+	}
 
-// 	w.Header().Add("Content-Type", "application/json")
-// 	w.WriteHeader(http.StatusOK)
-// 	json.NewEncoder(w).Encode(articles)
-// }
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(restaurants)
+}
 
-// func (h handler) GetArticle(w http.ResponseWriter, r *http.Request) {
-// 	vars := mux.Vars(r)
-// 	id := vars["id"]
+func (h handler) GetRestaurant(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
 
-// 	queryStmt := `SELECT * FROM articles WHERE id = $1 ;`
-// 	results, err := h.DB.Query(queryStmt, id)
-// 	if err != nil {
-// 		log.Println("failed to execute query", err)
-// 		w.WriteHeader(500)
-// 		return
-// 	}
+	queryStmt := `SELECT * FROM restaurants WHERE id = $1 ;`
+	results, err := h.DB.Query(queryStmt, id)
+	if err != nil {
+		log.Println("failed to execute query", err)
+		w.WriteHeader(500)
+		return
+	}
 
-// 	var article models.Article
-// 	for results.Next() {
-// 		err = results.Scan(&article.Id, &article.Title, &article.Desc, &article.Content)
-// 		if err != nil {
-// 			log.Println("failed to scan", err)
-// 			w.WriteHeader(500)
-// 			return
-// 		}
-// 	}
+	var restaurant models.Restaurant
+	for results.Next() {
+		err = results.Scan(&restaurant.Id, &restaurant.Name, &restaurant.Cuisine, &restaurant.Address)
+		if err != nil {
+			log.Println("failed to scan", err)
+			w.WriteHeader(500)
+			return
+		}
+	}
 
-// 	w.Header().Add("Content-Type", "application/json")
-// 	w.WriteHeader(http.StatusOK)
-// 	json.NewEncoder(w).Encode(article)
-// }
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(restaurant)
+}
 
 // func (h handler) AddArticle(w http.ResponseWriter, r *http.Request) {
 // 	// Read to request body

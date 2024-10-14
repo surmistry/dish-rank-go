@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"dish-rank-go/dish-rank-go/pkg/mocks"
+
 	_ "github.com/lib/pq"
 )
 
@@ -45,7 +46,7 @@ func CreateTable(db *sql.DB) {
 		return
 	}
 	if !exists {
-		results, err := db.Query("CREATE TABLE restaurants (id VARCHAR(36) PRIMARY KEY, title VARCHAR(100) NOT NULL, cuisinel VARCHAR(50) NOT NULL, address VARCHAR(50) NOT NULL);")
+		results, err := db.Query("CREATE TABLE restaurants (id VARCHAR(36) PRIMARY KEY, name VARCHAR(100) NOT NULL, cuisine VARCHAR(50) NOT NULL, address VARCHAR(50) NOT NULL);")
 		if err != nil {
 			fmt.Println("failed to execute query", err)
 			return
@@ -68,7 +69,7 @@ func CreateTable(db *sql.DB) {
 
 }
 
-func DeleteTable(db *sql.DB){
+func DeleteTable(db *sql.DB) {
 	var exists bool
 	if err := db.QueryRow("SELECT EXISTS (SELECT FROM pg_tables WHERE  schemaname = 'public' AND tablename = 'restaurants' );").Scan(&exists); err != nil {
 		fmt.Println("failed to execute query", err)
@@ -81,5 +82,6 @@ func DeleteTable(db *sql.DB){
 			return
 		}
 		fmt.Println("Table dropped successfully", results)
+	}
 
 }
