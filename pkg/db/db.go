@@ -52,10 +52,10 @@ func CreateTable(db *sql.DB) {
 		}
 		fmt.Println("Table created successfully", results)
 
-		for _, article := range mocks.Restaurants {
+		for _, restaurant := range mocks.Restaurants {
 			queryStmt := `INSERT INTO restaurants (id,title,cuisine,address) VALUES ($1, $2, $3, $4) RETURNING id;`
 
-			err := db.QueryRow(queryStmt, &article.Id, &article.Title, &article.Desc, &article.Content).Scan(&article.Id)
+			err := db.QueryRow(queryStmt, &restaurant.Id, &restaurant.Title, &restaurant.Cuisine, &restaurant.Address).Scan(&restaurant.Id)
 			if err != nil {
 				log.Println("failed to execute query", err)
 				return

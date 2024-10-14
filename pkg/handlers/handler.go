@@ -29,7 +29,7 @@ func (h handler) AddRestaurant(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-	var restaurant models.Restaurant
+	var restaurant models.Restaurants
 	json.Unmarshal(body, &restaurant)
 
 	restaurant.Id = (uuid.New()).String()
