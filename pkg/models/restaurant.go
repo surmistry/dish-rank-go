@@ -3,7 +3,7 @@ package models
 type Restaurant struct {
 	Name    string
 	Cuisine string
-	// Address	Address
+	Address string
 }
 
 type Dish struct {

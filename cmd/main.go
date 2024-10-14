@@ -15,12 +15,12 @@ func handleRequests(DB *sql.DB) {
 	// 	// create a new instance of a mux router
 	myRouter := mux.NewRouter().StrictSlash(true)
 	// 	myRouter.HandleFunc("/", homePage)
-	myRouter.HandleFunc("/articles", h.GetAllArticles).Methods(http.MethodGet)
-	myRouter.HandleFunc("/articles/{id}", h.GetArticle).Methods(http.MethodGet)
-	myRouter.HandleFunc("/articles", h.AddArticle).Methods(http.MethodPost)
-	myRouter.HandleFunc("/restaurants", h.Addrestaurant).Methods(http.MethodPost)
-	myRouter.HandleFunc("/articles/{id}", h.UpdateArticle).Methods(http.MethodPut)
-	myRouter.HandleFunc("/articles/{id}", h.DeleteArticle).Methods(http.MethodDelete)
+	myRouter.HandleFunc("/restaurants", h.AddRestaurant).Methods(http.MethodPost)
+	// myRouter.HandleFunc("/articles", h.GetAllArticles).Methods(http.MethodGet)
+	// myRouter.HandleFunc("/articles/{id}", h.GetArticle).Methods(http.MethodGet)
+	// myRouter.HandleFunc("/articles", h.AddArticle).Methods(http.MethodPost)
+	// myRouter.HandleFunc("/articles/{id}", h.UpdateArticle).Methods(http.MethodPut)
+	// myRouter.HandleFunc("/articles/{id}", h.DeleteArticle).Methods(http.MethodDelete)
 	log.Fatal(http.ListenAndServe(":8080", myRouter))
 }
 
