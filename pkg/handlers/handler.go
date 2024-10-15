@@ -103,68 +103,40 @@ func (h handler) GetRestaurant(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(restaurant)
 }
 
-// func (h handler) AddArticle(w http.ResponseWriter, r *http.Request) {
-// 	// Read to request body
-// 	defer r.Body.Close()
-// 	body, err := ioutil.ReadAll(r.Body)
+func (h handler) UpdateRestaurant(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
 
-// 	if err != nil {
-// 		log.Fatalln(err)
-// 		w.WriteHeader(500)
-// 		return
-// 	}
-// 	var article models.Article
-// 	json.Unmarshal(body, &article)
+	// Read request body
+	defer r.Body.Close()
+	body, err := ioutil.ReadAll(r.Body)
 
-// 	article.Id = (uuid.New()).String()
-// 	queryStmt := `INSERT INTO articles (id,title,description,content) VALUES ($1, $2, $3, $4) RETURNING id;`
-// 	err = h.DB.QueryRow(queryStmt, &article.Id, &article.Title, &article.Desc, &article.Content).Scan(&article.Id)
-// 	if err != nil {
-// 		log.Println("failed to execute query", err)
-// 		w.WriteHeader(500)
-// 		return
-// 	}
+	if err != nil {
+		log.Fatalln(err)
+	}
 
-// 	w.Header().Add("Content-Type", "application/json")
-// 	w.WriteHeader(http.StatusCreated)
-// 	json.NewEncoder(w).Encode("Created")
+	var updatedRestaurant models.Restaurant
+	json.Unmarshal(body, &updatedRestaurant)
 
-// }
+	queryStmt := `UPDATE restaurants SET name = $2, cuisine = $3, address = $4 WHERE id = $1 RETURNING id;`
+	err = h.DB.QueryRow(queryStmt, &id, &updatedRestaurant.Name, &updatedRestaurant.Cuisine, &updatedRestaurant.Address).Scan(&id)
+	if err != nil {
+		log.Println("failed to execute query", err)
+		w.WriteHeader(500)
+		return
+	}
 
-// func (h handler) UpdateArticle(w http.ResponseWriter, r *http.Request) {
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode("Updated")
+
+}
+
+// func (h handler) DeleteRestaurant(w http.ResponseWriter, r *http.Request) {
 // 	vars := mux.Vars(r)
 // 	id := vars["id"]
 
-// 	// Read request body
-// 	defer r.Body.Close()
-// 	body, err := ioutil.ReadAll(r.Body)
-
-// 	if err != nil {
-// 		log.Fatalln(err)
-// 	}
-
-// 	var updatedArticle models.Article
-// 	json.Unmarshal(body, &updatedArticle)
-
-// 	queryStmt := `UPDATE articles SET title = $2, description = $3, content = $4 WHERE id = $1 RETURNING id;`
-// 	err = h.DB.QueryRow(queryStmt, &id, &updatedArticle.Title, &updatedArticle.Desc, &updatedArticle.Content).Scan(&id)
-// 	if err != nil {
-// 		log.Println("failed to execute query", err)
-// 		w.WriteHeader(500)
-// 		return
-// 	}
-
-// 	w.Header().Add("Content-Type", "application/json")
-// 	w.WriteHeader(http.StatusOK)
-// 	json.NewEncoder(w).Encode("Updated")
-
-// }
-
-// func (h handler) DeleteArticle(w http.ResponseWriter, r *http.Request) {
-// 	vars := mux.Vars(r)
-// 	id := vars["id"]
-
-// 	queryStmt := `DELETE FROM articles WHERE id = $1;`
+// 	queryStmt := `DELETE FROM Restaurant WHERE id = $1;`
 // 	_, err := h.DB.Query(queryStmt, &id)
 // 	if err != nil {
 // 		log.Println("failed to execute query", err)
