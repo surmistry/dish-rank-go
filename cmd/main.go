@@ -19,7 +19,7 @@ func handleRequests(DB *sql.DB) {
 	myRouter.HandleFunc("/restaurants", h.GetAllRestaurants).Methods(http.MethodGet)
 	myRouter.HandleFunc("/restaurants/{id}", h.GetRestaurant).Methods(http.MethodGet)
 	myRouter.HandleFunc("/restaurants/{id}", h.UpdateRestaurant).Methods(http.MethodPut)
-	// myRouter.HandleFunc("/articles/{id}", h.DeleteArticle).Methods(http.MethodDelete)
+	myRouter.HandleFunc("/restaurants/{id}", h.DeleteRestaurant).Methods(http.MethodDelete)
 	log.Fatal(http.ListenAndServe(":8080", myRouter))
 }
 
