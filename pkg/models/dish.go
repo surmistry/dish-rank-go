@@ -1,9 +1,9 @@
 package models
 
 type Dish struct {
-	Name        string
-	Description string
-	Restaurant  Restaurant
+	Id      string `json:"Id"`
+	Name    string `json:"Name"`
+	RestaurantId  string `json:"RestaurantId"`
 }
 
 type Review struct {

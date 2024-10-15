@@ -39,7 +39,7 @@ func CloseConnection(db *sql.DB) {
 	defer db.Close()
 }
 
-func CreateTable(db *sql.DB) {
+func CreateTables(db *sql.DB) {
 	var exists bool
 	if err := db.QueryRow("SELECT EXISTS (SELECT FROM pg_tables WHERE  schemaname = 'public' AND tablename = 'restaurants' );").Scan(&exists); err != nil {
 		fmt.Println("failed to execute query", err)
@@ -62,14 +62,40 @@ func CreateTable(db *sql.DB) {
 				return
 			}
 		}
-		fmt.Println("Mock Articles included in Table", results)
+		fmt.Println("Mock Restaurants included in Table", results)
 	} else {
-		fmt.Println("Table 'articles' already exists ")
+		fmt.Println("Table 'restaurants' already exists ")
+	}
+
+	if err := db.QueryRow("SELECT EXISTS (SELECT FROM pg_tables WHERE  schemaname = 'public' AND tablename = 'dishes' );").Scan(&exists); err != nil {
+		fmt.Println("failed to execute query", err)
+		return
+	}
+	if !exists {
+		results, err := db.Query("CREATE TABLE dishes (id VARCHAR(36) PRIMARY KEY, name VARCHAR(100) NOT NULL, restaurant_id FOREIGN KEY REFERENCES restaurants(id) NOT NULL);")
+		if err != nil {
+			fmt.Println("failed to execute query", err)
+			return
+		}
+		fmt.Println("Table created successfully", results)
+
+		for _, dish := range mocks.Dishes {
+			queryStmt := `INSERT INTO dishes (id,name,cuisine,address) VALUES ($1, $2, $3, $4) RETURNING id;`
+
+			err := db.QueryRow(queryStmt, &dish.Id, &dish.Name, &dish.RestaurantId).Scan(&dish.Id)
+			if err != nil {
+				log.Println("failed to execute query", err)
+				return
+			}
+		}
+		fmt.Println("Mock Restaurants included in Table", results)
+	} else {
+		fmt.Println("Table 'restaurants' already exists ")
 	}
 
 }
 
-func DeleteTable(db *sql.DB) {
+func DeleteTables(db *sql.DB) {
 	var exists bool
 	if err := db.QueryRow("SELECT EXISTS (SELECT FROM pg_tables WHERE  schemaname = 'public' AND tablename = 'restaurants' );").Scan(&exists); err != nil {
 		fmt.Println("failed to execute query", err)
